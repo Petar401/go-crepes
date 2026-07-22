@@ -3,6 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/styles/mobile.css">
 <script src="/assets/8ca70661-dddc-4865-a678-5ef4b6e00297.js"></script>
 </head>
 <body>
@@ -231,6 +232,9 @@
         <span style="font-family:'Anton',sans-serif;font-size:23px;letter-spacing:.5px;color:#f6f0e2;line-height:1">GO<span style="color:#f6a81c"> CREPES</span></span>
       </a>
       <div style="display:flex;align-items:center;gap:30px">
+        <button type="button" class="mobnav-toggle" data-mobnav-toggle aria-label="Open menu" aria-controls="mobnav" aria-expanded="false">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div style="display:flex;gap:26px;font-weight:600;font-size:14.5px;letter-spacing:.3px;color:#e8ddca" class="navlinks">
           <a sc-camel-on-click="{{ goHome }}" style="cursor:pointer;color:{{ homeColor }}">Home</a>
           <a sc-camel-on-click="{{ goWho }}" style="cursor:pointer;color:{{ whoColor }}">Who We Are</a>
@@ -243,6 +247,20 @@
         </button>
       </div>
     </nav>
+    <div class="mobnav-scrim" data-mobnav-close></div>
+    <aside class="mobnav-drawer" id="mobnav" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="mobnav-head">
+        <span class="mobnav-title">GO<span> CREPES</span></span>
+        <button type="button" class="mobnav-close" data-mobnav-close aria-label="Close menu">&times;</button>
+      </div>
+      <nav>
+        <a sc-camel-on-click="{{ goHome }}" data-mobnav-close>Home</a>
+        <a sc-camel-on-click="{{ goWho }}" data-mobnav-close>Who We Are</a>
+        <a sc-camel-on-click="{{ goMenu }}" data-mobnav-close>Menu</a>
+        <a sc-camel-on-click="{{ goContact }}" data-mobnav-close>Contact</a>
+      </nav>
+      <button type="button" class="mobnav-order" sc-camel-on-click="{{ openOrMenu }}" data-mobnav-close>🛒 Order Now</button>
+    </aside>
   </header>
 
   <!-- ===================== HOME ===================== -->
@@ -987,5 +1005,30 @@ class Component extends DCLogic {
 }
 </script>
 
+<script>
+/* Mobile nav drawer toggle. Uses delegation on document so it survives the
+   app runtime re-rendering the header, and toggles a class on <html> (outside
+   the app root) so the open state is never wiped by a re-render. */
+(function () {
+  var root = document.documentElement;
+  function open() {
+    root.classList.add('mobnav-open');
+    var t = document.querySelector('[data-mobnav-toggle]');
+    if (t) t.setAttribute('aria-expanded', 'true');
+  }
+  function close() {
+    root.classList.remove('mobnav-open');
+    var t = document.querySelector('[data-mobnav-toggle]');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-mobnav-toggle]')) { e.preventDefault(); open(); return; }
+    if (e.target.closest('[data-mobnav-close]')) { close(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && root.classList.contains('mobnav-open')) close();
+  });
+})();
+</script>
 
 </body></html>

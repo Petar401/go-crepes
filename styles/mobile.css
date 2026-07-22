@@ -1,0 +1,129 @@
+/* Mobile UX layer for Go Crepes.
+   Loaded after the page's own inline styles; uses !important only where it must
+   override the site's inline style attributes. Desktop is unchanged (all rules
+   live inside max-width media queries). */
+
+/* ---- Hamburger button: hidden on desktop, shown on mobile ---- */
+.mobnav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #f6f0e2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobnav-toggle svg { display: block; }
+
+/* ---- Slide-in drawer + scrim (inert until opened) ---- */
+.mobnav-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 7, 4, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 90;
+}
+.mobnav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100dvh;
+  width: min(82vw, 320px);
+  transform: translateX(105%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #17120d;
+  border-left: 1px solid rgba(246, 168, 28, 0.25);
+  box-shadow: -18px 0 48px rgba(0, 0, 0, 0.45);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 20px calc(22px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+.mobnav-drawer .mobnav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.mobnav-drawer .mobnav-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: #f6f0e2;
+}
+.mobnav-drawer .mobnav-title span { color: #f6a81c; }
+.mobnav-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #e8ddca;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 10px;
+}
+.mobnav-drawer nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.mobnav-drawer nav a {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 4px 6px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.3px;
+  color: #e8ddca;
+  border-bottom: 1px solid rgba(246, 168, 28, 0.14);
+  cursor: pointer;
+}
+.mobnav-drawer nav a:active { color: #f6a81c; }
+.mobnav-drawer .mobnav-order {
+  margin-top: 18px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f6a81c;
+  color: #17120d;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(246, 168, 28, 0.32);
+}
+
+/* Open state (class set on <html> by the toggle script) */
+html.mobnav-open .mobnav-scrim { opacity: 1; pointer-events: auto; }
+html.mobnav-open .mobnav-drawer { transform: translateX(0); }
+html.mobnav-open, html.mobnav-open body { overflow: hidden; }
+
+/* ---- Mobile-only adjustments ---- */
+@media (max-width: 900px) {
+  .mobnav-toggle { display: inline-flex; }
+
+  /* Keep the primary Order button a comfortable tap size */
+  header nav > div > button { min-height: 44px; }
+
+  /* Footer links were ~20px tall — give them real tap room */
+  .foot-grid a { display: inline-block; padding: 7px 0; }
+}
+
+@media (min-width: 901px) {
+  /* Never show the drawer/scrim on desktop even if the class lingers */
+  .mobnav-drawer, .mobnav-scrim { display: none !important; }
+}
